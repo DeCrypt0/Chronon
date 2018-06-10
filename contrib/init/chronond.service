@@ -1,0 +1,26 @@
+[Unit]
+Description=CHN's distributed currency daemon
+After=network.target
+
+[Service]
+User=chronon
+Group=chronon
+
+Type=forking
+PIDFile=/var/lib/chronond/chronond.pid
+
+ExecStart=/usr/bin/chronond -daemon -pid=/var/lib/chronond/chronond.pid \
+          -conf=/etc/chronon/chronon.conf -datadir=/var/lib/chronond
+
+ExecStop=-/usr/bin/chronon-cli -conf=/etc/chronon/chronon.conf \
+         -datadir=/var/lib/chronond stop
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
